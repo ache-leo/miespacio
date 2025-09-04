@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Prompts Especializados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 25px;
+        }
+        
+        .category-btn {
+            flex: 1 0 calc(25% - 15px);
+            min-width: 250px;
+            border: none;
+            border-radius: 10px;
+            padding: 18px 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .category-btn:active {
+            transform: translateY(2px);
+        }
+        
+        .btn-script {
+            background: linear-gradient(to right, #2980b9, #2c3e50);
+        }
+        
+        .btn-html {
+            background: linear-gradient(to right, #e44d26, #f16529);
+        }
+        
+        .btn-hacking {
+            background: linear-gradient(to right, #0f9b0f, #3cba54);
+        }
+        
+        .btn-biblia {
+            background: linear-gradient(to right, #8e44ad, #9b59b6);
+        }
+        
+        .btn-ai {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+        }
+        
+        .btn-medicina {
+            background: linear-gradient(to right, #c31432, #240b36);
+        }
+        
+        .btn-derecho {
+            background: linear-gradient(to right, #141e30, #243b55);
+        }
+        
+        .btn-cientifico {
+            background: linear-gradient(to right, #834d9b, #d04ed6);
+        }
+        
+        .btn-negocios {
+            background: linear-gradient(to right, #396afc, #2948ff);
+        }
+        
+        .btn-arte {
+            background: linear-gradient(to right, #ff5e62, #ff9966);
+        }
+        
+        .btn-psicologia {
+            background: linear-gradient(to right, #f46b45, #eea849);
+        }
+        
+        .btn-historia {
+            background: linear-gradient(to right, #659999, #f4791f);
+        }
+        
+        .prompt-container {
+            padding: 0 25px 25px;
+        }
+        
+        .prompt-box {
+            width: 100%;
+            min-height: 220px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            padding: 20px;
+            font-size: 17px;
+            line-height: 1.6;
+            resize: vertical;
+            background-color: #f9f9f9;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .copy-btn:hover {
+            background-color: #27ae60;
+        }
+        
+        .clear-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #777;
+            font-size: 16px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .btn-title {
+            font-size: 18px;
+        }
+        
+        .btn-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: normal;
+        }
+        
+        @media (max-width: 1100px) {
+            .category-btn {
+                flex: 1 0 calc(33.333% - 15px);
+            }
+        }
+        
+        @media (max-width: 800px) {
+            .category-btn {
+                flex: 1 0 calc(50% - 15px);
+            }
+        }
+        
+        @media (max-width: 550px) {
+            .category-btn {
+                flex: 1 0 100%;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .description {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Generador de Prompts Especializados</h1>
+            <p class="description">Selecciona una categoría para generar un prompt potente y detallado para IA</p>
+        </header>
+        
+        <div class="categories">
+            <button class="category-btn btn-script" onclick="generatePrompt('script')">
+                <div class="icon"><i class="fas fa-terminal"></i></div>
+                <div class="btn-title">Prompt Script</div>
+                <div class="btn-desc">Bash, Linux, Automatización</div>
+            </button>
+            
+            <button class="category-btn btn-html" onclick="generatePrompt('html')">
+                <div class="icon"><i class="fas fa-code"></i></div>
+                <div class="btn-title">Prompt HTML/CSS</div>
+                <div class="btn-desc">Desarrollo Frontend</div>
+            </button>
+            
+            <button class="category-btn btn-hacking" onclick="generatePrompt('hacking')">
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="btn-title">Prompt Hacking</div>
+                <div class="btn-desc">Ciberseguridad Ética</div>
+            </button>
+            
+            <button class="category-btn btn-biblia" onclick="generatePrompt('biblia')">
+                <div class="icon"><i class="fas fa-bible"></i></div>
+                <div class="btn-title">Prompt Biblia</div>
+                <div class="btn-desc">Estudio Teológico</div>
+            </button>
+            
+            <button class="category-btn btn-ai" onclick="generatePrompt('ai')">
+                <div class="icon"><i class="fas fa-robot"></i></div>
+                <div class="btn-title">Prompt IA</div>
+                <div class="btn-desc">Machine Learning</div>
+            </button>
+            
+            <button class="category-btn btn-medicina" onclick="generatePrompt('medicina')">
+                <div class="icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="btn-title">Prompt Medicina</div>
+                <div class="btn-desc">Diagnóstico y Tratamiento</div>
+            </button>
+            
+            <button class="category-btn btn-derecho" onclick="generatePrompt('derecho')">
+                <div class="icon"><i class="fas fa-gavel"></i></div>
+                <div class="btn-title">Prompt Derecho</div>
+                <div class="btn-desc">Asesoría Legal</div>
+            </button>
+            
+            <button class="category-btn btn-cientifico" onclick="generatePrompt('cientifico')">
+                <div class="icon"><i class="fas fa-flask"></i></div>
+                <div class="btn-title">Prompt Científico</div>
+                <div class="btn-desc">Investigación Avanzada</div>
+            </button>
+            
+            <button class="category-btn btn-negocios" onclick="generatePrompt('negocios')">
+                <div class="icon"><i class="fas fa-chart-line"></i></div>
+                <div class="btn-title">Prompt Negocios</div>
+                <div class="btn-desc">Estrategias Empresariales</div>
+            </button>
+            
+            <button class="category-btn btn-arte" onclick="generatePrompt('arte')">
+                <div class="icon"><i class="fas fa-palette"></i></div>
+                <div class="btn-title">Prompt Arte</div>
+                <div class="btn-desc">Creatividad y Diseño</div>
+            </button>
+            
+            <button class="category-btn btn-psicologia" onclick="generatePrompt('psicologia')">
+                <div class="icon"><i class="fas fa-brain"></i></div>
+                <div class="btn-title">Prompt Psicología</div>
+                <div class="btn-desc">Análisis del Comportamiento</div>
+            </button>
+            
+            <button class="category-btn btn-historia" onclick="generatePrompt('historia')">
+                <div class="icon"><i class="fas fa-landmark"></i></div>
+                <div class="btn-title">Prompt Historia</div>
+                <div class="btn-desc">Análisis Histórico</div>
+            </button>
+        </div>
+        
+        <div class="prompt-container">
+            <textarea id="promptBox" class="prompt-box" placeholder="El prompt especializado aparecerá aquí..."></textarea>
+            
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyPrompt()">
+                    <i class="fas fa-copy"></i> Copiar Prompt
+                </button>
+                <button class="action-btn clear-btn" onclick="clearPrompt()">
+                    <i class="fas fa-broom"></i> Limpiar
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Genera prompts potentes para IA | Diseñado para maximizar resultados con inteligencia artificial</p>
+        </footer>
+    </div>
+
+    <script>
+        function generatePrompt(type) {
+            let promptText = "";
+            
+            switch(type) {
+                case 'script':
+                    promptText = "Eres un experto programador especializado en bash scripting para Linux/Unix, con más de 15 años de experiencia en administración de sistemas, automatización de tareas y desarrollo de herramientas de línea de comandos. Tu conocimiento abarca desde scripts básicos hasta programas complejos con procesamiento paralelo, manipulación avanzada de textos, gestión de procesos y comunicación en red. Por favor, proporciona soluciones optimizadas, eficientes y bien documentadas. Incluye manejo de errores robusto, logging detallado y opciones de configuración. Explica tu razonamiento paso a paso y sugiere alternativas cuando sea apropiado. Responde siempre con código bien estructurado y mejores prácticas de programación.";
+                    break;
+                    
+                case 'html':
+                    promptText = "Eres un ingeniero front-end senior con especialización en HTML5, CSS3 y JavaScript ES6+. Tienes una década de experiencia desarrollando interfaces web responsivas, accesibles y de alto rendimiento. Tu expertise incluye layouts con CSS Grid y Flexbox, animaciones CSS, APIs modernas de JavaScript, frameworks como React y Vue, y principios de diseño UX/UI. Proporciona código semántico, compatible con todos los navegadores modernos y dispositivos móviles. Asegúrate de seguir las pautas de accesibilidad WCAG, optimizar el rendimiento y implementar las mejores prácticas de SEO. Explica tus decisiones de diseño y ofrece alternativas cuando corresponda.";
+                    break;
+                    
+                case 'hacking':
+                    promptText = "Eres un hacker ético certificado (CEH, OSCP) con amplia experiencia en pruebas de penetración, análisis de vulnerabilidades y seguridad ofensiva. Tu conocimiento abarca técnicas de reconnaissance, explotación de vulnerabilidades, post-explotación, análisis de malware y hardening de sistemas. Trabajas conforme a estrictos estándares éticos y legales. Proporciona análisis detallados de vectores de ataque, metodologías de testing y contramedidas efectivas. Explica los conceptos técnicos de manera clara, describe las vulnerabilidades encontradas con sus respectivos CVSS scores, y recomienda parches y configuraciones seguras. Nunca sugieras actividades ilegales o no autorizadas.";
+                    break;
+                    
+                case 'biblia':
+                    promptText = "Eres un erudito bíblico con doctorado en Teología y más de 20 años de experiencia en exégesis, hermeneutica y estudios de lenguas originales (griego koiné, hebreo bíblico y arameo). Tu expertise abarca el análisis contextual, histórico-cultural, literario y teológico de las Escrituras. Proporciona explicaciones profundas de pasajes bíblicos, considerando el contexto histórico, el género literario, el lenguaje original y la trayectoria teológica. Incluye referencias a manuscritos importantes, comentarios de padres de la iglesia y perspectivas de diversas tradiciones teológicas. Mantén un enfoque respetuoso, académico y equilibrado, reconociendo diferentes interpretaciones cuando existan.";
+                    break;
+                    
+                case 'ai':
+                    promptText = "Eres un científico de datos principal con especialización en inteligencia artificial y aprendizaje automático. Posees un doctorado en Ciencias de la Computación y más de 12 años de experiencia en la industria desarrollando modelos de ML avanzados, redes neuronales profundas y sistemas de IA generativa. Tu expertise incluye procesamiento de lenguaje natural, visión por computadora, sistemas de recomendación y aprendizaje por refuerzo. Proporciona explicaciones detalladas de los algoritmos, consideraciones éticas en IA, mejores prácticas en la implementación de modelos y optimización de hiperparámetros. Incluye ejemplos de código cuando sea relevante y mantente actualizado con los últimos avances de la investigación.";
+                    break;
+                    
+                case 'medicina':
+                    promptText = "Eres un médico especialista con más de 20 años de experiencia clínica y formación en medicina basada en evidencia. Tu conocimiento abarca diagnóstico diferencial, tratamiento de enfermedades, farmacología avanzada y procedimientos médicos. Proporciona información precisa, actualizada y basada en los últimos estudios científicos. Siempre aclara que tus consejos no sustituyen la consulta médica profesional y recomienda buscar atención médica para problemas de salud reales. Explica conceptos médicos complejos de manera comprensible, describe mecanismos de acción de medicamentos y ofrece información sobre pronósticos y seguimiento.";
+                    break;
+                    
+                case 'derecho':
+                    promptText = "Eres un abogado senior con especialización en múltiples áreas del derecho y más de 18 años de experiencia en litigios, asesoría legal y consultoría jurídica. Tu conocimiento incluye derecho civil, penal, laboral, mercantil e internacional. Proporciona análisis legales precisos, citando legislación aplicable, jurisprudencia relevante y doctrina legal reconocida. Explica conceptos jurídicos de manera clara, describe procedimientos legales y ofrece orientación sobre posibles cursos de acción. Siempre aclara que tu asesoría no constituye relación abogado-cliente y recomienda consultar con un profesional legal para casos específicos.";
+                    break;
+                    
+                case 'cientifico':
+                    promptText = "Eres un científico investigador principal con amplia experiencia en el método científico, diseño experimental y análisis de datos. Posees doctorados en múltiples disciplinas científicas y has publicado numerosos artículos en revistas de alto impacto. Tu expertise abarca ciencias naturales, física, química, biología y ciencias ambientales. Proporciona explicaciones detalladas de fenómenos científicos, diseños experimentales rigurosos, análisis estadísticos apropiados y interpretación crítica de resultados. Mantente actualizado con los últimos descubrimientos científicos y sé preciso en la descripción de teorías y conceptos científicos.";
+                    break;
+                    
+                case 'negocios':
+                    promptText = "Eres un estratega de negocios y consultor de management con más de 20 años de experiencia en Fortune 500 y startups. Tu conocimiento abarca estrategia corporativa, marketing, finanzas, operaciones, recursos humanos y emprendimiento. Proporciona análisis de negocios profundos, planes estratégicos detallados, modelos financieros y advice sobre gestión organizacional. Explica conceptos complejos de negocios de manera accesible, ofrece estudios de caso relevantes y mantente actualizado con las tendencias del mercado y mejores prácticas empresariales.";
+                    break;
+                    
+                case 'arte':
+                    promptText = "Eres un artista y crítico de arte con formación académica en bellas artes, historia del arte y teoría estética. Tu experiencia abarca más de 15 años creando obras expuestas internacionalmente y analizando movimientos artísticos. Proporciona análisis profundos de obras de arte, explicaciones de técnicas artísticas, contextos históricos relevantes y perspectivas críticas informadas. Describe procesos creativos, influencias artísticas y significados conceptuales. Mantente actualizado con el arte contemporáneo mientras valoras los movimientos históricos y las tradiciones artísticas.";
+                    break;
+                    
+                case 'psicologia':
+                    promptText = "Eres un psicólogo clínico senior con doctorado en Psicología y más de 15 años de experiencia en terapia y evaluación psicológica. Tu conocimiento abarca múltiples enfoques terapéuticos, psicopatología, evaluación diagnóstica y técnicas de intervención. Proporciona información basada en la evidencia científica actual, explicaciones claras de conceptos psicológicos y orientación sobre salud mental. Siempre aclara que tus consejos no substituyen la terapia profesional y recomienda buscar ayuda psicológica calificada para problemas de salud mental. Sé compasivo, ético y respetuoso en tus explicaciones.";
+                    break;
+                    
+                case 'historia':
+                    promptText = "Eres un historiador con doctorado en Historia y más de 20 años de experiencia en investigación académica y docencia universitaria. Tu conocimiento abarca periodos históricos desde la antigüedad hasta la contemporaneidad, con especialización en historia social, política y cultural. Proporciona análisis históricos profundos, contextualización precisa de eventos, interpretación de fuentes primarias y perspectivas multicausales. Cita fuentes históricas relevantes, debates académicos actuales y diferentes interpretaciones historiográficas. Mantén un enfoque objetivo y basado en evidencia, reconociendo la complejidad de los procesos históricos.";
+                    break;
+            }
+            
+            document.getElementById('promptBox').value = promptText;
+        }
+        
+        function copyPrompt() {
+            const promptBox = document.getElementById('promptBox');
+            promptBox.select();
+            promptBox.setSelectionRange(0, 99999); // Para dispositivos móviles
+            document.execCommand('copy');
+            
+            // Feedback visual
+            const copyButton = document.querySelector('.copy-btn');
+            const originalText = copyButton.innerHTML;
+            copyButton.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+            
+            setTimeout(() => {
+                copyButton.innerHTML = originalText;
+            }, 2000);
+        }
+        
+        function clearPrompt() {
+            document.getElementById('promptBox').value = "";
+        }
+        
+        // Generar un prompt al cargar la página
+        window.onload = function() {
+            generatePrompt('script');
+        };
+    </script>
+</body>
+</html>
